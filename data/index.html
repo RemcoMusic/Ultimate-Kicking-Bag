@@ -5,12 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" type="text/css" href="style.css">
+
+  <script type = "text/javascript">
+    var ws = new WebSocket("ws://192.168.4.1/ws");
+
+     ws.onmessage = function(evt) {
+        document.getElementById("display").innerHTML  = "Time: " + evt.data + " Seconds";
+    };
+  </script>
 </head>
 <body>
   <h1>Taekwondo Reaction Time</h1>
   <p><a href="/start"><button class="button">Start</button></a></p>
-  <p>Reaction Time: <strong>%STATE%</strong></p>
   <p><a href="/reset"><button class="button button2">Reset</button></a></p>
-  <p><a href="/resetGyro"><button class="button button2">Re-Initilize</button></a></p>
-  <p>Gyroscope: <strong>%STATUS%</strong></p>
+  <p id = "display">Click Start!</p>
+  <p>Status van iets: <strong>%STATE%</strong></p>
 </html>

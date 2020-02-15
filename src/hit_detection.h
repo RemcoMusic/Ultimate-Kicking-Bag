@@ -1,9 +1,11 @@
 #include <Arduino.h>
-#include "Wire.h"
 #include "MPU9250.h"
 
-class HitDetection {
+class HitDetection{
+    private:
+        MPU9250* gyro = nullptr;
+
     public:
-        void startSensor();
+        void startSensor(MPU9250* g);
         float readSensor();
 };
