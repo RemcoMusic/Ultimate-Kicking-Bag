@@ -35,18 +35,11 @@ void makeTasks(){
 
 void initMPU(){ 
     int gyroStatus = gyro.begin();
-    int calibratedStatus = gyro.calibrateAccel();
     if(gyroStatus == 1){
       Serial.println("Gyroscope is initialized");
     } else {
       Serial.print("Gyroscope failed with error code: ");
       Serial.println(gyroStatus);
-    }
-    if(calibratedStatus == 1){
-      Serial.println("Accelarometer is calibrated");
-    } else {
-      Serial.print("Accelarometer failed to calibrate: ");
-      Serial.println(calibratedStatus);
     }
  }
 

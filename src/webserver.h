@@ -6,4 +6,5 @@ class webserver{
         bool readTriggerButton();
         void resetTriggerButton();
         void setTime(long reactionTime);
+        String getMode();
 };

@@ -7,16 +7,16 @@ AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 AsyncWebSocketClient * globalClient = NULL;
 
-bool a1 = false;
 bool triggerButton = false;
 String timeMessage;
 String errorMessage;
+String lightMode;
 
 // Replaces placeholder with LED state value
 String processor(const String& var){
   Serial.println(var);
   if(var == "STATE"){
-    if(a1){
+    if(true){
       timeMessage = "ON";
     }
     else{
@@ -59,8 +59,22 @@ void webserver::startAsyncWebServer(){
   });
 
   server.on("/reset", HTTP_GET, [](AsyncWebServerRequest *request){  
-      a1 = false;
       triggerButton = false;
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  server.on("/left", HTTP_GET, [](AsyncWebServerRequest *request){  
+      lightMode = "left";
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  server.on("/random", HTTP_GET, [](AsyncWebServerRequest *request){  
+      lightMode = "random";
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  server.on("/right", HTTP_GET, [](AsyncWebServerRequest *request){  
+      lightMode = "right";
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
@@ -83,4 +97,11 @@ void webserver::resetTriggerButton(){
 
 bool webserver::readTriggerButton(){
   return triggerButton;
+}
+
+String webserver::getMode(){
+  if (lightMode == nullptr){
+    lightMode = "left";
+  }
+  return lightMode;
 }
