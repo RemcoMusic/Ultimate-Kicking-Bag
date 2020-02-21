@@ -1,65 +1,14 @@
-#include <Arduino.h>
-#include "RemoteDebug.h" 
-#include <ESPmDNS.h>
-#include "OTA.h"
+#include <Arduino.h> 
 #include "hit_detection.h"
 #include "webserver.h"
 #include "ledDriver.h"
 #include "main.h"
 
-RemoteDebug Debug;
 webserver webServer;
-OTA OTAupdate;
 ledDriver ledRing;
 
 bool triggerAction = false;
 String lightModes;
-
-void processCmdRemoteDebug(){
-
-	String lastCmd = Debug.getLastCommand();
-
-	if (lastCmd == "ota") {
-      debugI("OTA is starting");
-      OTAupdate.startOTA();
-  }
-	if (lastCmd == "left") {
-      debugI("Testing LEDS - Left");
-      ledRing.setLeds("left");
-  }
-  if (lastCmd == "right") {
-      debugI("Testing LEDS - Right");
-      ledRing.setLeds("right");
-  }
-  if (lastCmd == "random") {
-      debugI("Testing LEDS - Random");
-      ledRing.setLeds("random");
-  }
-  if (lastCmd == "clear") {
-      debugI("Testing LEDS - Clear");
-      ledRing.clearLeds();
-  }
-}
-
-void remoteDebugger(void * parameter){
-
-    if (MDNS.begin("Taekwondo-Papendrecht")){
-        Serial.print("* MDNS responder started. Hostname -> ");
-        Serial.println("Taekwondo-Papendrecht");
-    }
-
-    MDNS.addService("telnet", "tcp", 23);
-
-    Debug.begin("TaekwondoDebug");        // Initiaze the telnet server
-    Debug.setResetCmdEnabled(true);       // Enable the reset command
-	  Debug.showProfiler(false);            // Profiler (Good to measure times, to optimize codes)
-	  Debug.showColors(true);               // Colors
-    Debug.setCallBackProjectCmds(&processCmdRemoteDebug);
-  
-    for (;;){
-      Debug.handle();   
-    }
-}
 
 void asyncWebServer(void * parameter){
   webServer.startAsyncWebServer();

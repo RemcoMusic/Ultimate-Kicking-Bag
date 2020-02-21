@@ -1,3 +1,5 @@
+#include <ArduinoOTA.h>
+
 class OTA
 {
     public:
