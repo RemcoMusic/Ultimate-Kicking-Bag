@@ -7,14 +7,9 @@
 webserver webServer;
 ledDriver ledRing;
 
-bool triggerAction = false;
-String lightModes;
-
 void asyncWebServer(void * parameter){
   webServer.startAsyncWebServer();
   for(;;){
-    triggerAction = webServer.readTriggerButton();
-    lightModes = webServer.getMode();
     vTaskDelay(40);
   }
 }
@@ -52,15 +47,12 @@ void gyroscope(void * paramater){
   bool timer = false;
   
   for(;;){
-
-    if(triggerAction){
+    if(globalData.triggerButton){
       timer = true;
       previousTriggerMillis = millis();
-      interval = random(2000,7000);
-      triggerAction = false;
-      webServer.resetTriggerButton();
+      interval = random(2000,6000);
+      globalData.triggerButton = false;
     }
-
 
     currentTriggerMillis = millis();
 
@@ -69,7 +61,7 @@ void gyroscope(void * paramater){
         previousTriggerMillis = currentTriggerMillis;
         timer = false;
         kicked = false;
-        ledRing.setLeds(lightModes);
+        ledRing.setLeds(globalData.gamemode);
         currentStartTime = millis();
       }
     }
@@ -77,7 +69,7 @@ void gyroscope(void * paramater){
     while(!kicked){
       float tempReading = abs(h.readSensor());
 
-        if((tempReading - calibratedMedianValue) > 10){
+        if((tempReading - calibratedMedianValue) > globalData.difficulty){
           currentEndTime = millis();
           elapsedTime = currentEndTime - currentStartTime;
 

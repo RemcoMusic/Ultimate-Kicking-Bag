@@ -8,6 +8,5 @@
 #include "soc/timer_group_reg.h"
 
 //Function prototypes
-void remoteDebugger(void * parameter);
 void gyroscope(void * parameter);
 void asyncWebServer(void * parameter);

@@ -1,27 +1,36 @@
 #include <Arduino.h>
 #include "webserver.h"
 
-AsyncWebServer server(80);
-AsyncWebSocket ws("/ws");
 AsyncWebSocketClient * globalClient = NULL;
 
 bool triggerButton = false;
-String timeMessage;
-String errorMessage;
-String lightMode;
+String systemStatus;
+String frontGameMode;
+String frontDifficulty;
 
 // Replaces placeholder with LED state value
 String processor(const String& var){
   Serial.println(var);
-  if(var == "STATE"){
-    if(true){
-      timeMessage = "ON";
+  if(var == "STATUS"){
+    if(globalData.triggerButton){
+      systemStatus = "Busy";
     }
     else{
-      timeMessage = "OFF";
+      systemStatus = "Ready";
     }
-    Serial.print(timeMessage);
-    return timeMessage;
+    return systemStatus;
+  }
+  if(var == "GAMEMODE"){
+    frontGameMode = globalData.gamemode;
+    return frontGameMode;
+  }
+  if(var == "DIFFICULTY"){
+    if(globalData.difficulty == 10){
+      frontDifficulty = "Adult";
+    }else {
+      frontDifficulty = "Kid";
+    }
+    return frontDifficulty;
   }
   return String();
 }
@@ -41,44 +50,52 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
 }
 
 void webserver::startAsyncWebServer(){
+  ws = new AsyncWebSocket("/ws");
+  server = new AsyncWebServer(80);
+
     // Route for root / web page
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+  server->on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
   
   // Route to load style.css file
-  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+  server->on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
   });
 
-  server.on("/start", HTTP_GET, [](AsyncWebServerRequest *request){ 
-        triggerButton = true;
+  server->on("/start", HTTP_GET, [](AsyncWebServerRequest *request){ 
+        globalData.triggerButton = true;
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
-  server.on("/reset", HTTP_GET, [](AsyncWebServerRequest *request){  
-      triggerButton = false;
+  server->on("/left", HTTP_GET, [](AsyncWebServerRequest *request){  
+      globalData.gamemode = "left";
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
-  server.on("/left", HTTP_GET, [](AsyncWebServerRequest *request){  
-      lightMode = "left";
+  server->on("/random", HTTP_GET, [](AsyncWebServerRequest *request){  
+      globalData.gamemode = "random";
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
-  server.on("/random", HTTP_GET, [](AsyncWebServerRequest *request){  
-      lightMode = "random";
+  server->on("/right", HTTP_GET, [](AsyncWebServerRequest *request){  
+      globalData.gamemode = "right";
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
-  server.on("/right", HTTP_GET, [](AsyncWebServerRequest *request){  
-      lightMode = "right";
+  server->on("/adult", HTTP_GET, [](AsyncWebServerRequest *request){  
+      globalData.difficulty = 10;
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
-  ws.onEvent(onWsEvent);
-  server.addHandler(&ws);
-  server.begin();
+  server->on("/kid", HTTP_GET, [](AsyncWebServerRequest *request){  
+      globalData.difficulty = 2;
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  ws->onEvent(onWsEvent);
+  server->addHandler(ws);
+  server->begin();
 }
 
 void webserver::setTime(long reactionTime){
@@ -87,19 +104,4 @@ void webserver::setTime(long reactionTime){
       String convTimeToString = String(timeInSeconds);
       globalClient->text(convTimeToString);
    }
-}
-
-void webserver::resetTriggerButton(){
-  triggerButton = false;
-}
-
-bool webserver::readTriggerButton(){
-  return triggerButton;
-}
-
-String webserver::getMode(){
-  if (lightMode == nullptr){
-    lightMode = "left";
-  }
-  return lightMode;
 }
