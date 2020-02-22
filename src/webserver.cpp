@@ -89,7 +89,7 @@ void webserver::startAsyncWebServer(){
   });
 
   server->on("/kid", HTTP_GET, [](AsyncWebServerRequest *request){  
-      globalData.difficulty = 2;
+      globalData.difficulty = 3;
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 

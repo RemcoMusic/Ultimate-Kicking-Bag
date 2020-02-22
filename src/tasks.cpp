@@ -34,7 +34,9 @@ void gyroscope(void * paramater){
   float tempMedianCalculation = 0;
 
   for (int i = 0; i < 100; i++){ 
-    tempMedianCalculation += h.readSensor();
+    float temp = h.readSensor();
+    tempMedianCalculation += temp;
+    Serial.println(temp);
   }
 
   calibratedMedianValue = abs(tempMedianCalculation/100.00);
@@ -68,6 +70,7 @@ void gyroscope(void * paramater){
 
     while(!kicked){
       float tempReading = abs(h.readSensor());
+      Serial.println(tempReading);
 
         if((tempReading - calibratedMedianValue) > globalData.difficulty){
           currentEndTime = millis();
