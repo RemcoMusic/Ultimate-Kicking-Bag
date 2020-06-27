@@ -2,15 +2,17 @@
 #include "main.h"
 
 MPU9250 gyro(Wire,0x68);
+static int taskcore =1;
 
 void makeTasks(){
-    xTaskCreate(
+    xTaskCreatePinnedToCore(
     gyroscope,
     "Gyroscope_readings",
     10000,
     &gyro,
     1,
-    NULL);
+    NULL,
+    taskcore);
 
     xTaskCreate(
     asyncWebServer,

@@ -33,14 +33,12 @@ void gyroscope(void * paramater){
   float calibratedMedianValue = 0;
   float tempMedianCalculation = 0;
 
-  for (int i = 0; i < 100; i++){ 
-    float temp = h.readSensor();
-    tempMedianCalculation += temp;
-    Serial.println(temp);
+  for (int i = 0; i < 100; i++){
+    tempMedianCalculation += h.readSensor();
   }
 
   calibratedMedianValue = abs(tempMedianCalculation/100.00);
-
+  
   Serial.print("Calibrated value: ");
   Serial.println(calibratedMedianValue);
 
