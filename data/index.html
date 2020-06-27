@@ -10,19 +10,26 @@
     var ws = new WebSocket("ws://192.168.4.1/ws");
 
      ws.onmessage = function(evt) {
-        document.getElementById("display").innerHTML  = "Time: " + evt.data + " Seconds";
+        document.getElementById("time").innerHTML  = "Time: " + evt.data + " Seconds";
     };
   </script>
 </head>
 <body>
   <h1>Taekwondo Reaction Time</h1>
   <p><a href="/start"><button class="button">Start</button></a></p>
-  <p><a href="/reset"><button class="button button2">Reset</button></a></p>
-  <p id = "display">Click Start!</p>
+  <p id = "time">Click Start!</p>
   <p>
     <a href="/left"><button class="button button3">Left</button></a>
     <a href="/random"><button class="button button3">Random</button></a>
     <a href="/right"><button class="button button3">Right</button></a>
   </p>
-  <p>Status van iets: <strong>%STATE%</strong></p>
-</html>
+  <p>
+    <a href="/adult"><button class="button button3">Adult</button></a>
+    <a href="/kid"><button class="button button3">Kid</button></a>
+  </p>
+  <p>
+    <p>Gamemode:      <strong>%GAMEMODE%</strong></p>
+    <p>Difficulty:    <strong>%DIFFICULTY%</strong></p>
+    <p>System status: <strong>%STATUS%</strong></p>
+  </p>
+</html> 

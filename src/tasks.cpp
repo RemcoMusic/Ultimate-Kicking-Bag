@@ -1,71 +1,15 @@
-#include <Arduino.h>
-#include "RemoteDebug.h" 
-#include <ESPmDNS.h>
-#include "OTA.h"
+#include <Arduino.h> 
 #include "hit_detection.h"
 #include "webserver.h"
 #include "ledDriver.h"
 #include "main.h"
 
-RemoteDebug Debug;
 webserver webServer;
-OTA OTAupdate;
 ledDriver ledRing;
-
-bool triggerAction = false;
-String lightModes;
-
-void processCmdRemoteDebug(){
-
-	String lastCmd = Debug.getLastCommand();
-
-	if (lastCmd == "ota") {
-      debugI("OTA is starting");
-      OTAupdate.startOTA();
-  }
-	if (lastCmd == "left") {
-      debugI("Testing LEDS - Left");
-      ledRing.setLeds("left");
-  }
-  if (lastCmd == "right") {
-      debugI("Testing LEDS - Right");
-      ledRing.setLeds("right");
-  }
-  if (lastCmd == "random") {
-      debugI("Testing LEDS - Random");
-      ledRing.setLeds("random");
-  }
-  if (lastCmd == "clear") {
-      debugI("Testing LEDS - Clear");
-      ledRing.clearLeds();
-  }
-}
-
-void remoteDebugger(void * parameter){
-
-    if (MDNS.begin("Taekwondo-Papendrecht")){
-        Serial.print("* MDNS responder started. Hostname -> ");
-        Serial.println("Taekwondo-Papendrecht");
-    }
-
-    MDNS.addService("telnet", "tcp", 23);
-
-    Debug.begin("TaekwondoDebug");        // Initiaze the telnet server
-    Debug.setResetCmdEnabled(true);       // Enable the reset command
-	  Debug.showProfiler(false);            // Profiler (Good to measure times, to optimize codes)
-	  Debug.showColors(true);               // Colors
-    Debug.setCallBackProjectCmds(&processCmdRemoteDebug);
-  
-    for (;;){
-      Debug.handle();   
-    }
-}
 
 void asyncWebServer(void * parameter){
   webServer.startAsyncWebServer();
   for(;;){
-    triggerAction = webServer.readTriggerButton();
-    lightModes = webServer.getMode();
     vTaskDelay(40);
   }
 }
@@ -89,12 +33,12 @@ void gyroscope(void * paramater){
   float calibratedMedianValue = 0;
   float tempMedianCalculation = 0;
 
-  for (int i = 0; i < 100; i++){ 
+  for (int i = 0; i < 100; i++){
     tempMedianCalculation += h.readSensor();
   }
 
   calibratedMedianValue = abs(tempMedianCalculation/100.00);
-
+  
   Serial.print("Calibrated value: ");
   Serial.println(calibratedMedianValue);
 
@@ -103,15 +47,12 @@ void gyroscope(void * paramater){
   bool timer = false;
   
   for(;;){
-
-    if(triggerAction){
+    if(globalData.triggerButton){
       timer = true;
       previousTriggerMillis = millis();
-      interval = random(2000,7000);
-      triggerAction = false;
-      webServer.resetTriggerButton();
+      interval = random(2000,6000);
+      globalData.triggerButton = false;
     }
-
 
     currentTriggerMillis = millis();
 
@@ -120,15 +61,16 @@ void gyroscope(void * paramater){
         previousTriggerMillis = currentTriggerMillis;
         timer = false;
         kicked = false;
-        ledRing.setLeds(lightModes);
+        ledRing.setLeds(globalData.gamemode);
         currentStartTime = millis();
       }
     }
 
     while(!kicked){
       float tempReading = abs(h.readSensor());
+      Serial.println(tempReading);
 
-        if((tempReading - calibratedMedianValue) > 10){
+        if((tempReading - calibratedMedianValue) > globalData.difficulty){
           currentEndTime = millis();
           elapsedTime = currentEndTime - currentStartTime;
 
