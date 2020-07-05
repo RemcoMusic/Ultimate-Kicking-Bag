@@ -10,4 +10,5 @@ class webserver{
     public:
         void startAsyncWebServer();
         void setTime(long reactionTime);
+        void setSystemStatus(bool status);
 };

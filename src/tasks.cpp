@@ -16,9 +16,14 @@ void asyncWebServer(void * parameter){
 
 void gyroscope(void * paramater){
   HitDetection h;
-  h.startSensor((MPU9250*)paramater);
   ledRing.setup();
 
+  if(h.startSensor((MPU9250*)paramater)){
+    ledRing.sensorStatusLight(true);
+  } else {
+    ledRing.sensorStatusLight(false);
+  }
+  
   //Variables for start time
   long previousTriggerMillis = 0;
   unsigned long currentTriggerMillis = 0;
@@ -45,6 +50,8 @@ void gyroscope(void * paramater){
   //Variables for resetting the process
   bool kicked = true;
   bool timer = false;
+
+  webServer.setSystemStatus(true);
   
   for(;;){
     if(globalData.triggerButton){
@@ -52,6 +59,7 @@ void gyroscope(void * paramater){
       previousTriggerMillis = millis();
       interval = random(2000,6000);
       globalData.triggerButton = false;
+      webServer.setSystemStatus(false);
     }
 
     currentTriggerMillis = millis();
@@ -75,6 +83,7 @@ void gyroscope(void * paramater){
           elapsedTime = currentEndTime - currentStartTime;
 
           webServer.setTime(elapsedTime);
+          webServer.setSystemStatus(true);
           ledRing.clearLeds();
           kicked = true;
         }

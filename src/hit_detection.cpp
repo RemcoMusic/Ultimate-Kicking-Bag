@@ -1,8 +1,9 @@
 #include <Arduino.h>
 #include "hit_detection.h"
 
-void HitDetection::startSensor(MPU9250* g){    
+bool HitDetection::startSensor(MPU9250* g){    
     gyro = g;
+    return globalData.sensorWorking;
 }
 
 float HitDetection::readSensor(){

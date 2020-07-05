@@ -3,7 +3,6 @@
 
 AsyncWebSocketClient * globalClient = NULL;
 
-bool triggerButton = false;
 String systemStatus;
 String frontGameMode;
 String frontDifficulty;
@@ -11,15 +10,6 @@ String frontDifficulty;
 // Replaces placeholder with LED state value
 String processor(const String& var){
   Serial.println(var);
-  if(var == "STATUS"){
-    if(globalData.triggerButton){
-      systemStatus = "Busy";
-    }
-    else{
-      systemStatus = "Ready";
-    }
-    return systemStatus;
-  }
   if(var == "GAMEMODE"){
     frontGameMode = globalData.gamemode;
     return frontGameMode;
@@ -31,6 +21,9 @@ String processor(const String& var){
       frontDifficulty = "Kid";
     }
     return frontDifficulty;
+  }
+  if(var == "STATUS"){
+    return globalData.systemStatus;
   }
   return String();
 }
@@ -103,5 +96,19 @@ void webserver::setTime(long reactionTime){
       float timeInSeconds = (reactionTime/1000.00);
       String convTimeToString = String(timeInSeconds);
       globalClient->text(convTimeToString);
+   }
+}
+
+void webserver::setSystemStatus(bool status){
+  if(globalClient != NULL && globalClient->status() == WS_CONNECTED){
+      String message = "Failed";
+      if(status){
+        message = "Ready";
+        globalData.systemStatus = message;
+      } else{
+        message = "Busy";
+        globalData.systemStatus = message;
+      }
+      globalClient->text(message);
    }
 }

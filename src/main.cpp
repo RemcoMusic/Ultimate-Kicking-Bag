@@ -27,9 +27,11 @@ void initMPU(){
   int gyroStatus = gyro.begin();
   if(gyroStatus == 1){
     Serial.println("Gyroscope is initialized");
+    globalData.sensorWorking = true;
   } else {
     Serial.print("Gyroscope failed with error code: ");
     Serial.println(gyroStatus);
+    globalData.sensorWorking = false;
   }
 }
 

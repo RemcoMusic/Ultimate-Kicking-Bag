@@ -10,6 +10,7 @@ struct GlobalData {
         String gamemode = "left";
         int8_t difficulty = 10;
         bool triggerButton = false;
+        String systemStatus = "unknown";
         };
 
        extern GlobalData globalData;
