@@ -10,6 +10,7 @@ struct GlobalData {
         String gamemode = "left";
         int8_t difficulty = 10;
         bool triggerButton = false;
+        bool sensorWorking = false;
         String systemStatus = "unknown";
         };
 
