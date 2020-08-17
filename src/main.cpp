@@ -8,7 +8,7 @@ void makeTasks(){
     xTaskCreatePinnedToCore(
     gyroscope,
     "Gyroscope_readings",
-    10000,
+    1600,
     &gyro,
     1,
     NULL,
@@ -17,9 +17,17 @@ void makeTasks(){
     xTaskCreate(
     asyncWebServer,
     "Async_WebServer",
-    1000,
+    1600,
     NULL,
     2,
+    NULL);
+
+    xTaskCreate(
+    runGame,
+    "Run_game",
+    1600,
+    NULL,
+    3,
     NULL);
 }
 

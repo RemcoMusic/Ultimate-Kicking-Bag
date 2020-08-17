@@ -14,6 +14,9 @@ String processor(const String& var){
     frontGameMode = globalData.gamemode;
     return frontGameMode;
   }
+  if(var == "LEDSIDE"){
+    return globalData.ledSide;
+  }
   if(var == "DIFFICULTY"){
     if(globalData.difficulty == 10){
       frontDifficulty = "Adult";
@@ -62,17 +65,27 @@ void webserver::startAsyncWebServer(){
   });
 
   server->on("/left", HTTP_GET, [](AsyncWebServerRequest *request){  
-      globalData.gamemode = "left";
+      globalData.ledSide = "left";
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
   server->on("/random", HTTP_GET, [](AsyncWebServerRequest *request){  
-      globalData.gamemode = "random";
+      globalData.ledSide = "random";
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  server->on("/fast", HTTP_GET, [](AsyncWebServerRequest *request){  
+      globalData.gamemode = "fast";
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  server->on("/amount", HTTP_GET, [](AsyncWebServerRequest *request){  
+      globalData.gamemode = "amount";
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
   server->on("/right", HTTP_GET, [](AsyncWebServerRequest *request){  
-      globalData.gamemode = "right";
+      globalData.ledSide = "right";
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 

@@ -87,6 +87,16 @@ void ledDriver::sensorStatusLight(bool status){
     }
 }
 
+void ledDriver::hitLedSignal(){
+    FastLED.setBrightness(50);
+    for (int i = 0; i < 24; i++){
+        leds[i] = CRGB::LightBlue;
+    }
+    FastLED.show();
+    delayMicroseconds(1000000);
+    clearLeds();
+}
+
 void ledDriver::clearLeds()
 {
 	FastLED.clear();

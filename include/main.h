@@ -10,3 +10,4 @@
 //Function prototypes
 void gyroscope(void * parameter);
 void asyncWebServer(void * parameter);
+void runGame(void * parameter);
