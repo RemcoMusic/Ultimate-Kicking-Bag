@@ -19,29 +19,45 @@
   </script>
 </head>
 <body>
+
   <h2>Taekwondo Reaction Time</h2>
   <p><a href="/start"><button class="button">Start</button></a></p>
   <p id = "time">Click Start!</p>
-  <p>
-    <h2>Gamemodes</h2>
-    <a href="/fast"><button class="button button3">Fastest Kick</button></a>
-    <a href="/amount"><button class="button button3">Amount of Kicks</button></a>
-  </p>
-  <p>
-    <h2>LED Side</h2>
-    <a href="/left"><button class="button button3">Left</button></a>
-    <a href="/random"><button class="button button3">Random</button></a>
-    <a href="/right"><button class="button button3">Right</button></a>
-  </p>
-  <p>
-    <h2>Difficulty</h2>
-    <a href="/adult"><button class="button button3">Adult</button></a>
-    <a href="/kid"><button class="button button3">Kid</button></a>
-  </p>
-  <p>
-    <p>Gamemode:      <strong>%GAMEMODE%</strong></p>
-    <p>LED Side:      <strong>%LEDSIDE%</strong></p>
-    <p>Difficulty:    <strong>%DIFFICULTY%</strong></p>
-    <p id= "status">System Status: <strong>%STATUS%</strong></p>
-  </p>
+
+  <div class="container">
+
+    <div class="column1">
+      <h2>Gamemodes</h2>
+      <a href="/fast"><button class="button button3">Fastest Kick</button></a>
+      <br>
+      <a href="/amount"><button class="button button3">Amount of Kicks</button></a>
+    </div>
+
+    <div class="column2">
+      <h2>LED settings</h2>
+      <a href="/left"><button class="button button3">Left</button></a>
+      <br>
+      <a href="/random"><button class="button button3">Random</button></a>
+      <br>
+      <a href="/right"><button class="button button3">Right</button></a>
+    </div>
+
+    <div class="column3">
+      <h2>Difficulty</h2>
+      <a href="/adult"><button class="button button3">Adult</button></a>
+      <br>
+      <a href="/kid"><button class="button button3">Kid</button></a>
+    </div>
+
+    <div class="column4">
+      <h2>Status</h2>
+      <p>Gamemode:      <strong>%GAMEMODE%</strong></p>
+      <p>LED Side:      <strong>%LEDSIDE%</strong></p>
+      <p>Difficulty:    <strong>%DIFFICULTY%</strong></p>
+      <p id= "status">System Status: <strong>%STATUS%</strong></p>
+      <a href="/restart"><button class="button button2">Restart System</button></a>
+    </div>
+
+  </div> 
+
 </html> 

@@ -64,6 +64,12 @@ void webserver::startAsyncWebServer(){
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
+  server->on("/restart", HTTP_GET, [](AsyncWebServerRequest *request){ 
+        ESP.restart();
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+
   server->on("/left", HTTP_GET, [](AsyncWebServerRequest *request){  
       globalData.ledSide = "left";
     request->send(SPIFFS, "/index.html", String(), false, processor);
