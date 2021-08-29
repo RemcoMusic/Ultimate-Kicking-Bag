@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include "main.h"
 
-MPU9250 gyro(Wire,0x68);
+SPIClass BussSelection(3);
+MPU9250 gyro(BussSelection, 5);
+
 static int taskcore =1;
 
 void makeTasks(){
@@ -31,7 +33,7 @@ void makeTasks(){
     NULL);
 }
 
-void initMPU(){ 
+void initMPU(){
   int gyroStatus = gyro.begin();
   if(gyroStatus == 1){
     Serial.println("Gyroscope is initialized");
