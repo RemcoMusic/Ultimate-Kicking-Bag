@@ -9,4 +9,7 @@ class HitDetection{
     public:
         bool startSensor(MPU9250* g);
         float readSensor();
+        void calibrateMedianValue();
+        void printAccelValues();
+        void printGyroValues();
 };

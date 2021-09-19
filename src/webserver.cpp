@@ -49,7 +49,7 @@ void webserver::startAsyncWebServer(){
   ws = new AsyncWebSocket("/ws");
   server = new AsyncWebServer(80);
 
-    // Route for root / web page
+  // Route for root / web page
   server->on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
@@ -69,9 +69,13 @@ void webserver::startAsyncWebServer(){
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
-
   server->on("/left", HTTP_GET, [](AsyncWebServerRequest *request){  
       globalData.ledSide = "left";
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  server->on("/right", HTTP_GET, [](AsyncWebServerRequest *request){  
+      globalData.ledSide = "right";
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
@@ -90,8 +94,13 @@ void webserver::startAsyncWebServer(){
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
-  server->on("/right", HTTP_GET, [](AsyncWebServerRequest *request){  
-      globalData.ledSide = "right";
+  server->on("/printAccel", HTTP_GET, [](AsyncWebServerRequest *request){  
+      globalData.gamemode = "printAccel";
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  server->on("/printGyro", HTTP_GET, [](AsyncWebServerRequest *request){  
+      globalData.gamemode = "printGyro";
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 

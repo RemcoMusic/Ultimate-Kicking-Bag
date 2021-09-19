@@ -40,26 +40,16 @@ void gyroscope(void * paramater){
     ledRing.sensorStatusLight(false);
   }
   
-  //Variables for calibrating sensor values
-  float tempMedianCalculation = 0;
-
-  for (int i = 0; i < 100; i++){
-    tempMedianCalculation += h.readSensor();
-  }
-
-  globalData.calibratedMedianValue = abs(tempMedianCalculation/100.00);
-  
-  Serial.print("Calibrated value: ");
-  Serial.println(globalData.calibratedMedianValue);
-
+  h.calibrateMedianValue();
+ 
   for(;;){
     if(globalData.enableSensor){
       globalData.sensorValue = abs(h.readSensor());
-      Serial.println(globalData.sensorValue);
+    } else if(globalData.gamemode == "printAccel"){
+      h.printAccelValues();
+    } else if(globalData.gamemode == "printGyro"){
+      h.printGyroValues();
     }
-
-    TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
-    TIMERG0.wdt_feed=1;
-    TIMERG0.wdt_wprotect=0;
+    vTaskDelay(40);
   }
 }
