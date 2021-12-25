@@ -9,6 +9,7 @@ void ledDriver::setup(){
 }
 
 void ledDriver::setLeds(String side){
+    clearLeds();
     if(side == "left"){
         lightLeds("left");
     }
@@ -38,6 +39,62 @@ void ledDriver::lightLeds(String mode){
             leds[i] = CRGB::Green;
         }
     }
+}
+
+void ledDriver::sensorStatusLight(bool status){
+    if(status){
+        FastLED.setBrightness(50);
+        for (int i = 0; i < 24; i++){
+            leds[i] = CRGB::Green;
+        }
+        FastLED.show();
+        delayMicroseconds(2000000);
+        clearLeds();
+        delayMicroseconds(2000000);
+        FastLED.setBrightness(50);
+        for (int i = 0; i < 24; i++){
+            leds[i] = CRGB::Green;
+        }
+        FastLED.show();
+        delayMicroseconds(2000000);
+        clearLeds();
+        leds[0] = CRGB::Green;
+        leds[1] = CRGB::Green;
+        leds[23] = CRGB::Green;
+        FastLED.setBrightness(20);
+        FastLED.show();
+    } else{
+        FastLED.setBrightness(50);
+        for (int i = 0; i < 24; i++){
+            leds[i] = CRGB::Red;
+        }
+        FastLED.show();
+        delayMicroseconds(2000000);
+        clearLeds();
+        delayMicroseconds(2000000);
+        FastLED.setBrightness(50);
+        for (int i = 0; i < 24; i++){
+            leds[i] = CRGB::Red;
+        }
+        FastLED.show();
+        delayMicroseconds(2000000);
+        clearLeds();
+        leds[0] = CRGB::Red;
+        leds[1] = CRGB::Red;
+        leds[23] = CRGB::Red;
+        FastLED.setBrightness(20);
+        FastLED.show();
+    }
+}
+
+void ledDriver::hitLedSignal(){
+    FastLED.setBrightness(50);
+    for (int i = 0; i < 24; i++){
+        leds[i] = CRGB::LightBlue;
+    }
+    FastLED.show();
+    delayMicroseconds(1000000);
+    clearLeds();
 }
 
 void ledDriver::clearLeds()

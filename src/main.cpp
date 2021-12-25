@@ -1,47 +1,48 @@
 #include <Arduino.h>
-#include "WiFi.h"
-#include "SPIFFS.h"
-#include "settings.h"
-#include "MPU9250.h"
 #include "main.h"
 
-MPU9250 gyro(Wire,0x68);
+SPIClass BussSelection(3);
+MPU9250 gyro(BussSelection, 5);
+
+static int taskcore = 1;
 
 void makeTasks(){
-   xTaskCreate(
-    remoteDebugger,
-    "Remote_Debugger_task",
-    10000,
-    NULL,
-    3,
-    NULL);
-
-    xTaskCreate(
+    xTaskCreatePinnedToCore(
     gyroscope,
     "Gyroscope_readings",
-    10000,
+    1600,
     &gyro,
     1,
-    NULL);
+    NULL,
+    taskcore);
 
     xTaskCreate(
     asyncWebServer,
     "Async_WebServer",
-    1000,
+    1600,
     NULL,
     2,
     NULL);
+
+    xTaskCreate(
+    runGame,
+    "Run_game",
+    1600,
+    NULL,
+    3,
+    NULL);
 }
 
-void initMPU(){ 
-    int gyroStatus = gyro.begin();
-    if(gyroStatus == 1){
-      Serial.println("Gyroscope is initialized");
-    } else {
-      Serial.print("Gyroscope failed with error code: ");
-      Serial.println(gyroStatus);
-    }
- }
+void initMPU(){
+  int gyroStatus = 0;
+
+  do
+  {
+    gyroStatus = gyro.begin();
+    delay(2000);
+  } while (gyroStatus != 1);
+  globalData.sensorWorking = true;
+}
 
 void setup() {
   Serial.begin(115200);
