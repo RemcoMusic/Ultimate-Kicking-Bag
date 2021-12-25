@@ -33,7 +33,6 @@ void gamemodes::fastestKick(ledDriver &ledRing, webserver &webServer){
             currentStartTime = millis();
 
             while(!kicked){
-                delay(10);
                 if((globalData.sensorValue - globalData.calibratedMedianValue) > globalData.difficulty){
                     currentEndTime = millis();
                     elapsedTime = currentEndTime - currentStartTime;
@@ -44,8 +43,10 @@ void gamemodes::fastestKick(ledDriver &ledRing, webserver &webServer){
                     kicked = true;
                     globalData.enableSensor = false;
                 }
+                vTaskDelay(10);
             }
         }
+        vTaskDelay(20);
     }
 }
 
