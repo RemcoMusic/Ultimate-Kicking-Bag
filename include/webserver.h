@@ -1,6 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include "ESPAsyncWebServer.h"
+#include "ArduinoJson.h"
 #include "SPIFFS.h"
 #include "settings.h"
 
@@ -10,6 +11,7 @@ class webserver{
         AsyncWebServer * server;
     public:
         void startAsyncWebServer();
+        void updateFrontEnd();
         void setTime(long reactionTime);
         void setSystemStatus(bool status);
 };

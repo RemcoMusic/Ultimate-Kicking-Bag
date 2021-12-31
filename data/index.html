@@ -7,21 +7,29 @@
   <link rel="stylesheet" type="text/css" href="style.css">
 
   <script type = "text/javascript">
-    var ws = new WebSocket("ws://192.168.4.1/ws");
+    var espSocket = new WebSocket('ws://'+document.location.host+'/ws',['arduino']);
 
-     ws.onmessage = function(evt) {
-       if(isNaN(evt.data)){
-        document.getElementById("status").innerHTML  = "System Status: <strong>" + evt.data + "</strong>";
-       } else{
-        document.getElementById("time").innerHTML  = "Time: " + evt.data + " Seconds";
-       }
-    };
+     espSocket.onmessage = function(event) {
+       const espMessage = event.data
+       const jsonData = JSON.parse(espMessage);
+
+       document.getElementById("gamemode").innerHTML = "Gamemode: " + jsonData.Gamemode;
+       document.getElementById("side").innerHTML = "Side: " + jsonData.LedDirection;
+       document.getElementById("difficulty").innerHTML = "Difficulty: " + jsonData.Gamemode;
+       document.getElementById("status").innerHTML = "Status: " + jsonData.SystemStatus;
+    }
+
+    function startGame() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", "/start");
+      xhttp.send();
+    }
   </script>		
 </head>
-<body onkeydown="getKeyAndMove(event)">
+<body>
 
   <h2>Taekwondo Reaction Time</h2>
-  <p><a href="/start"><button class="button">Start</button></a></p>
+  <button type="button" class="button" onclick="startGame()">Start</button>
   <p id = "time">Click Start!</p>
 
   <div class="container">
@@ -55,9 +63,9 @@
 
     <div class="column4">
       <h2>Status</h2>
-      <p>Gamemode:      <strong>%GAMEMODE%</strong></p>
-      <p>LED Side:      <strong>%LEDSIDE%</strong></p>
-      <p>Difficulty:    <strong>%DIFFICULTY%</strong></p>
+      <p id="gamemode">Gamemode:      <strong>%GAMEMODE%</strong></p>
+      <p id="side">LED Side:      <strong>%LEDSIDE%</strong></p>
+      <p id="difficulty">Difficulty:    <strong>%DIFFICULTY%</strong></p>
       <p id= "status">System Status: <strong>%STATUS%</strong></p>
       <a href="/restart"><button class="button button2">Restart System</button></a>
     </div>

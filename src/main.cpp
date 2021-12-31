@@ -7,14 +7,14 @@ MPU9250 gyro(BussSelection, 5);
 static int taskcore = 1;
 
 void makeTasks(){
-    xTaskCreatePinnedToCore(
-    gyroscope,
-    "Gyroscope_readings",
-    1600,
-    &gyro,
-    1,
-    NULL,
-    taskcore);
+    // xTaskCreatePinnedToCore(
+    // gyroscope,
+    // "Gyroscope_readings",
+    // 1600,
+    // &gyro,
+    // 1,
+    // NULL,
+    // taskcore);
 
     xTaskCreate(
     asyncWebServer,
@@ -24,13 +24,13 @@ void makeTasks(){
     2,
     NULL);
 
-    xTaskCreate(
-    runGame,
-    "Run_game",
-    1600,
-    NULL,
-    3,
-    NULL);
+    // xTaskCreate(
+    // runGame,
+    // "Run_game",
+    // 1600,
+    // NULL,
+    // 3,
+    // NULL);
 }
 
 void initMPU(){
@@ -46,7 +46,7 @@ void initMPU(){
 
 void setup() {
   Serial.begin(115200);
-  initMPU();
+  // initMPU();
 
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
