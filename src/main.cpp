@@ -36,8 +36,7 @@ void makeTasks(){
 void initMPU(){
   int gyroStatus = 0;
 
-  do
-  {
+  do {
     gyroStatus = gyro.begin();
     delay(2000);
   } while (gyroStatus != 1);

@@ -1,4 +1,4 @@
-# Taekwondo-Reaction-Time
+# Ultimate Kicking Bag
 Add-on for a punching bag
 
 
