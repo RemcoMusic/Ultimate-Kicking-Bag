@@ -3,7 +3,8 @@
 void gamemodes::fastestKick(ledDriver &ledRing, webserver &webServer){
     globalData.triggerButton = false;
     globalData.enableSensor = true;
-    webServer.setSystemStatus(false);
+    globalData.systemStatus = "Busy";
+    webServer.updateFrontEnd();
 
     //Variables for start time
     long previousTriggerMillis = 0;
@@ -37,11 +38,12 @@ void gamemodes::fastestKick(ledDriver &ledRing, webserver &webServer){
                     currentEndTime = millis();
                     elapsedTime = currentEndTime - currentStartTime;
 
-                    webServer.setTime(elapsedTime);
-                    webServer.setSystemStatus(true);
+                    globalData.systemStatus = "Ready";
+                    globalData.reactionTime = elapsedTime;
                     ledRing.hitLedSignal();
                     kicked = true;
                     globalData.enableSensor = false;
+                    webServer.updateFrontEnd();
                 }
                 vTaskDelay(10);
             }
@@ -53,7 +55,7 @@ void gamemodes::fastestKick(ledDriver &ledRing, webserver &webServer){
 void gamemodes::fastestAmountOfKicks(ledDriver &ledRing, webserver &webServer){
     globalData.triggerButton = false;
     globalData.enableSensor = true;
-    webServer.setSystemStatus(false);
+    // webServer.setSystemStatus(false);
 
     //Variables for start time
     long previousTriggerMillis = 0;
@@ -100,8 +102,8 @@ void gamemodes::fastestAmountOfKicks(ledDriver &ledRing, webserver &webServer){
                     currentEndTime = millis();
                     elapsedTime = currentEndTime - currentStartTime;
 
-                    webServer.setTime(elapsedTime);
-                    webServer.setSystemStatus(true);
+                    // webServer.setTime(elapsedTime);
+                    // webServer.setSystemStatus(true);
                     ledRing.hitLedSignal();
                     amountAchieved = true;
                     globalData.enableSensor = false;

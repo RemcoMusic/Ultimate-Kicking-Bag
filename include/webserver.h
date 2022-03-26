@@ -12,6 +12,4 @@ class webserver{
     public:
         void startAsyncWebServer();
         void updateFrontEnd();
-        void setTime(long reactionTime);
-        void setSystemStatus(bool status);
 };
