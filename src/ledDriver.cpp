@@ -88,7 +88,7 @@ void ledDriver::sensorStatusLight(bool status){
 }
 
 void ledDriver::hitLedSignal(){
-    FastLED.setBrightness(50);
+    FastLED.setBrightness(20);
     for (int i = 0; i < 24; i++){
         leds[i] = CRGB::LightBlue;
     }

@@ -1,77 +1,41 @@
 #include <gamemodes.h>
 
-void gamemodes::fastestKick(ledDriver &ledRing, webserver &webServer){
-    globalData.triggerButton = false;
-    globalData.enableSensor = true;
-    globalData.systemStatus = "Busy";
+void gamemodes::fastestKick(ledDriver &ledRing, webserver &webServer)
+{
+    setGlobalDataVariables(false, true, "Busy", 0);
     webServer.updateFrontEnd();
 
-    //Variables for start time
-    long previousTriggerMillis = 0;
-    unsigned long currentTriggerMillis = 0;
-    long interval = 0;
+    previousStartSignalTrigger = millis();
+    interval = random(2000, 6000);
+    gameIsReadyToPlay = true;
 
-    //Variables for measering hit time
-    unsigned long currentStartTime = 0;
-    unsigned long currentEndTime= 0;
-    long elapsedTime = 0;
-
-    currentTriggerMillis = millis();
-    previousTriggerMillis = millis();
-    interval = random(2000,6000);
-
-    bool kicked = true;
-    bool game = true;
-
-    while (game){
-        currentTriggerMillis = millis();
-        
-        if (currentTriggerMillis - previousTriggerMillis >= interval){
-            previousTriggerMillis = currentTriggerMillis;
-            game=false;
-            kicked = false;
-            ledRing.setLeds(globalData.ledSide);
-            currentStartTime = millis();
-
-            while(!kicked){
-                if((globalData.sensorValue - globalData.calibratedMedianValue) > globalData.difficulty){
-                    currentEndTime = millis();
-                    elapsedTime = currentEndTime - currentStartTime;
-
-                    globalData.systemStatus = "Ready";
-                    globalData.reactionTime = elapsedTime;
-                    ledRing.hitLedSignal();
-                    kicked = true;
-                    globalData.enableSensor = false;
-                    webServer.updateFrontEnd();
+    while (gameIsReadyToPlay)
+    {
+        if (isStartSignalTriggered(millis(), ledRing))
+        {
+            while (gameIsPlaying)
+            {
+                if ((globalData.sensorValue - globalData.calibratedMedianValue) > globalData.difficulty)
+                {
+                    endGame(ledRing, webServer);
                 }
-                vTaskDelay(10);
+                vTaskDelay(20);
             }
         }
         vTaskDelay(20);
     }
 }
 
-void gamemodes::fastestAmountOfKicks(ledDriver &ledRing, webserver &webServer){
-    globalData.triggerButton = false;
-    globalData.enableSensor = true;
-    // webServer.setSystemStatus(false);
+//Experimental gamemode
+void gamemodes::fastestAmountOfKicks(ledDriver &ledRing, webserver &webServer)
+{
+    setGlobalDataVariables(false, true, "Busy", 0);
+    webServer.updateFrontEnd();
 
-    //Variables for start time
-    long previousTriggerMillis = 0;
-    unsigned long currentTriggerMillis = 0;
-    long interval = 0;
+    previousStartSignalTrigger = millis();
+    interval = random(2000, 5000);
+    gameIsReadyToPlay = true;
 
-    //Variables for measering hit time
-    unsigned long currentStartTime = 0;
-    unsigned long currentEndTime= 0;
-    long elapsedTime = 0;
-
-    currentTriggerMillis = millis();
-    previousTriggerMillis = millis();
-    interval = random(2000,5000);
-
-    bool game = true;
     bool amountAchieved = false;
     int8_t amountToAchieve = 5;
     int8_t amountOfKicks = 0;
@@ -79,36 +43,62 @@ void gamemodes::fastestAmountOfKicks(ledDriver &ledRing, webserver &webServer){
     int kickInterval = 300;
     unsigned long previousKick = 0;
 
-    while(game){
-        currentTriggerMillis = millis();
-        
-        if (currentTriggerMillis - previousTriggerMillis >= interval){
-            previousTriggerMillis = currentTriggerMillis;
-            ledRing.setLeds(globalData.ledSide);
-            game = false;
-            currentStartTime = millis();
-
-            while(!amountAchieved){
-                delay(10);
-                if((globalData.sensorValue - globalData.calibratedMedianValue) > globalData.difficulty){
-                    if((millis() - previousKick) >= kickInterval){
+    while (gameIsReadyToPlay)
+    {
+        if (isStartSignalTriggered(millis(), ledRing))
+        {
+            while (gameIsPlaying)
+            {
+                if ((globalData.sensorValue - globalData.calibratedMedianValue) > globalData.difficulty)
+                {
+                    if ((millis() - previousKick) >= kickInterval)
+                    {
                         amountOfKicks++;
                         Serial.println("Kick!!!!!!!!!!!!!!!!!!!!");
                         previousKick = millis();
                     }
                 }
 
-                if(amountOfKicks >= amountToAchieve){
-                    currentEndTime = millis();
-                    elapsedTime = currentEndTime - currentStartTime;
-
-                    // webServer.setTime(elapsedTime);
-                    // webServer.setSystemStatus(true);
-                    ledRing.hitLedSignal();
-                    amountAchieved = true;
-                    globalData.enableSensor = false;
+                if (amountOfKicks >= amountToAchieve)
+                {
+                    endGame(ledRing, webServer);
                 }
             }
         }
     }
+}
+
+void gamemodes::setGlobalDataVariables(bool triggerButton, bool enableSensor, String systemStatus, unsigned long reactionTime)
+{
+    globalData.triggerButton = triggerButton;
+    globalData.enableSensor = enableSensor;
+    globalData.systemStatus = systemStatus;
+    globalData.reactionTime = reactionTime;
+}
+
+bool gamemodes::isStartSignalTriggered(unsigned long currentTime, ledDriver &ledRing)
+{
+    if ((currentTime - previousStartSignalTrigger) >= interval)
+    {
+        previousStartSignalTrigger = currentTime;
+        gameIsReadyToPlay = false;
+        gameIsPlaying = true;
+        ledRing.setLeds(globalData.ledSide);
+        startGameTime = millis();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void gamemodes::endGame(ledDriver &ledRing, webserver &webServer)
+{
+    endGameTime = millis();
+    ledRing.hitLedSignal();
+    gameIsPlaying = false;
+
+    setGlobalDataVariables(false, false, "Ready", (endGameTime - startGameTime));
+    webServer.updateFrontEnd();
 }
