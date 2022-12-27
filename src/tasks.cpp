@@ -1,5 +1,5 @@
 #include <Arduino.h> 
-#include "hit_detection.h"
+#include "read_sensor.h"
 #include "webserver.h"
 #include "ledDriver.h"
 #include "gamemodes.h"
@@ -32,23 +32,23 @@ void runGame(void * parameter){
 }
 
 void gyroscope(void * paramater){
-  HitDetection h;
+  ReadSensor sensor;
 
-  if(h.startSensor((MPU9250*)paramater)){
+  if(sensor.start((MPU9250*)paramater)){
     ledRing.sensorStatusLight(true);
   } else {
     ledRing.sensorStatusLight(false);
   }
   
-  h.calibrateMedianValue();
+  sensor.calibrateMedianValue("x");
  
   for(;;){
     if(globalData.enableSensor){
-      globalData.sensorValue = abs(h.readSensor());
+      globalData.sensorValue = abs(sensor.readAccellerometer("x"));
     } else if(globalData.gamemode == "printAccel"){
-      h.printAccelValues();
+      sensor.printAccelValues();
     } else if(globalData.gamemode == "printGyro"){
-      h.printGyroValues();
+      sensor.printGyroValues();
     }
     vTaskDelay(40);
   }
