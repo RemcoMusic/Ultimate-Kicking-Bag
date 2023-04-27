@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "read_sensor.h"
 
-bool ReadSensor::start(MPU9250 *g)
+bool ReadSensor::start(ICM20689 *g)
 {
     gyro = g;
     return globalData.sensorWorking;

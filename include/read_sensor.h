@@ -1,13 +1,13 @@
 #include <Arduino.h>
-#include "MPU9250.h"
+#include "ICM20689.h"
 #include "settings.h"
 
 class ReadSensor{
     private:
-        MPU9250* gyro = nullptr;
+        ICM20689* gyro = nullptr;
 
     public:
-        bool start(MPU9250* g);
+        bool start(ICM20689* g);
         float readAccellerometer(String axis);
         void calibrateMedianValue(String axis);
         void printAccelValues();

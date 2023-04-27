@@ -34,7 +34,7 @@ void runGame(void * parameter){
 void gyroscope(void * paramater){
   ReadSensor sensor;
 
-  if(sensor.start((MPU9250*)paramater)){
+  if(sensor.start((ICM20689*)paramater)){
     ledRing.sensorStatusLight(true);
   } else {
     ledRing.sensorStatusLight(false);

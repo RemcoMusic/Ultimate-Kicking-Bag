@@ -1,7 +1,7 @@
 #pragma once
 #include "WiFi.h"
 #include "SPIFFS.h"
-#include "MPU9250.h"
+#include "ICM20689.h"
 #include "settings.h"
 
 #include "soc/timer_group_struct.h"
