@@ -2,13 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "..\\MPU-9250-6500"
-		},
-		{
-			"name": "Webserver test",
-			"path": "..\\Webserver test"
 		}
 	],
 	"settings": {
