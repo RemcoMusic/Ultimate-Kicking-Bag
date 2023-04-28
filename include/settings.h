@@ -10,6 +10,7 @@ struct GlobalData {
         String gamemode = "fast";
         String ledSide = "left";
         int8_t difficulty = 10;
+        long reactionTime = 0.0;
         bool triggerButton = false;
         bool sensorWorking = false;
         bool enableSensor = false;

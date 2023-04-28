@@ -7,59 +7,72 @@
   <link rel="stylesheet" type="text/css" href="style.css">
 
   <script type = "text/javascript">
-    var ws = new WebSocket("ws://192.168.4.1/ws");
+    var espSocket = new WebSocket('ws://'+document.location.host+'/update',['arduino']);
 
-     ws.onmessage = function(evt) {
-       if(isNaN(evt.data)){
-        document.getElementById("status").innerHTML  = "System Status: <strong>" + evt.data + "</strong>";
-       } else{
-        document.getElementById("time").innerHTML  = "Time: " + evt.data + " Seconds";
+     espSocket.onmessage = function(event) {
+       const espMessage = event.data
+       const jsonData = JSON.parse(espMessage);
+
+       document.getElementById("gamemode").innerHTML = "Gamemode: " + jsonData.Gamemode;
+       document.getElementById("side").innerHTML = "Side: " + jsonData.LedDirection;
+       document.getElementById("difficulty").innerHTML = "Difficulty: " + jsonData.Gamemode;
+       document.getElementById("status").innerHTML = "Status: " + jsonData.SystemStatus;
+       if(jsonData.ReactionTime === 0){
+         document.getElementById("time").innerHTML = "<strong>Press Start!</strong>";
+       } else {
+         document.getElementById("time").innerHTML = "<strong>Resultaat: " + jsonData.ReactionTime + " Seconden</strong>";
        }
-    };
+    }
+
+    function processButton(action) {
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", action);
+      xhttp.send();
+    }
   </script>		
 </head>
-<body onkeydown="getKeyAndMove(event)">
+<body>
 
-  <h2>Taekwondo Reaction Time</h2>
-  <p><a href="/start"><button class="button">Start</button></a></p>
-  <p id = "time">Click Start!</p>
+  <h2>Ultimate Kicking Bag</h2>
+  <button type="button" class="button" onclick="processButton('/start')">Start</button>
+  <p id="time">Click Start!</p>
 
   <div class="container">
 
     <div class="column1">
       <h2>Gamemodes</h2>
-      <a href="/fast"><button class="button button3">Fastest Kick</button></a>
+      <button type="button" class="button button3" onclick="processButton('/fast')">Fastest Kick</button>
       <br>
-      <a href="/amount"><button class="button button3">Amount of Kicks</button></a>
+      <button type="button" class="button button3" onclick="processButton('/amount')">Amount of Kicks</button>
       <br>
-      <a href="/printAccel"><button class="button button3">Print Accel Data</button></a>
+      <button type="button" class="button button3" onclick="processButton('/printAccel')">Print Accel Data</button>
       <br>
-      <a href="/printGyro"><button class="button button3">Print Gyro Data</button></a>
+      <button type="button" class="button button3" onclick="processButton('/printGyro')">Print Gyro Data</button>
     </div>
 
     <div class="column2">
       <h2>LED settings</h2>
-      <a href="/left"><button class="button button3">Left</button></a>
+      <button type="button" class="button button3" onclick="processButton('/left')">Left</button>
       <br>
-      <a href="/random"><button class="button button3">Random</button></a>
+      <button type="button" class="button button3" onclick="processButton('/random')">Random</button>
       <br>
-      <a href="/right"><button class="button button3">Right</button></a>
+      <button type="button" class="button button3" onclick="processButton('/right')">Right</button>
     </div>
 
     <div class="column3">
       <h2>Difficulty</h2>
-      <a href="/adult"><button class="button button3">Adult</button></a>
+      <button type="button" class="button button3" onclick="processButton('/adult')">Adult</button>
       <br>
-      <a href="/kid"><button class="button button3">Kid</button></a>
+      <button type="button" class="button button3" onclick="processButton('/kid')">Kid</button>
     </div>
 
     <div class="column4">
       <h2>Status</h2>
-      <p>Gamemode:      <strong>%GAMEMODE%</strong></p>
-      <p>LED Side:      <strong>%LEDSIDE%</strong></p>
-      <p>Difficulty:    <strong>%DIFFICULTY%</strong></p>
+      <p id="gamemode">Gamemode:      <strong>%GAMEMODE%</strong></p>
+      <p id="side">LED Side:      <strong>%LEDSIDE%</strong></p>
+      <p id="difficulty">Difficulty:    <strong>%DIFFICULTY%</strong></p>
       <p id= "status">System Status: <strong>%STATUS%</strong></p>
-      <a href="/restart"><button class="button button2">Restart System</button></a>
+      <button type="button" class="button button2" onclick="processButton('/restart')">Restart System</button>
     </div>
 
   </div>

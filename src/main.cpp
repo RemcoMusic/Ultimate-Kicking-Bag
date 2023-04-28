@@ -2,7 +2,7 @@
 #include "main.h"
 
 SPIClass BussSelection(3);
-MPU9250 gyro(BussSelection, 5);
+ICM20689 gyro(BussSelection, 5);
 
 static int taskcore = 1;
 
@@ -36,8 +36,7 @@ void makeTasks(){
 void initMPU(){
   int gyroStatus = 0;
 
-  do
-  {
+  do {
     gyroStatus = gyro.begin();
     delay(2000);
   } while (gyroStatus != 1);
