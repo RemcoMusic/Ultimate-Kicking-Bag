@@ -14,7 +14,7 @@ String getFrontEndData(){
     }else {
        updateData["Difficulty"] = "Kid";
     }
-    float result = (globalData.reactionTime/1000.00);
+    double result = (globalData.reactionTime/1000.00);
     updateData["ReactionTime"] = result;
 
   String output;
